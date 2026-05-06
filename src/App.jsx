@@ -1,152 +1,188 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
+import { useRef } from "react"
+import { motion, useScroll, useTransform } from "framer-motion"
+import * as THREE from "three"
 
-function Scene() {
-  const ref = useRef();
+function CameraRig({ scroll }) {
+  const { camera } = useThree()
 
   useFrame(() => {
-    ref.current.rotation.y += 0.01;
-    ref.current.rotation.x += 0.005;
-  });
+    const t = scroll.current
+
+    camera.position.z = 8 - t * 4
+    camera.position.y = t * 3
+    camera.rotation.x = -t * 0.3
+  })
+
+  return null
+}
+
+function Scene({ scroll }) {
+  const mesh = useRef()
+
+  useFrame(() => {
+    mesh.current.rotation.y += 0.002
+  })
 
   return (
-    <mesh ref={ref}>
-      <icosahedronGeometry args={[1.5, 1]} />
-      <meshStandardMaterial color="#ff6a00" wireframe />
-    </mesh>
-  );
+    <>
+      <fog attach="fog" args={["#000", 5, 20]} />
+      <ambientLight intensity={0.3} />
+      <pointLight position={[5, 5, 5]} intensity={2} color="#ff6a00" />
+
+      <mesh ref={mesh}>
+        <icosahedronGeometry args={[2, 1]} />
+        <meshStandardMaterial wireframe color="#ff6a00" />
+      </mesh>
+
+      <CameraRig scroll={scroll} />
+    </>
+  )
 }
 
 export default function App() {
-  const { scrollYProgress } = useScroll();
+  const { scrollYProgress } = useScroll()
+  const scrollRef = useRef(0)
 
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -400]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -600]);
+  scrollYProgress.onChange((v) => (scrollRef.current = v))
+
+  const fadeOut = useTransform(scrollYProgress, [0, 0.3], [1, 0])
+  const textMove = useTransform(scrollYProgress, [0, 1], [0, -200])
+  const imageZoom = useTransform(scrollYProgress, [0, 1], [1, 1.4])
 
   return (
-    <div style={{ background: "#000", color: "#fff", fontFamily: "sans-serif" }}>
+    <div style={{ background: "#000", color: "#fff", fontFamily: "Arial" }}>
       
+      {/* 3D BACKGROUND */}
+      <Canvas style={{ position: "fixed", top: 0, left: 0 }}>
+        <Scene scroll={scrollRef} />
+      </Canvas>
+
       {/* HERO */}
       <section style={{ height: "100vh", position: "relative" }}>
-        <Canvas>
-          <ambientLight />
-          <directionalLight position={[2, 2, 2]} />
-          <Scene />
-        </Canvas>
+        <motion.div style={{
+          opacity: fadeOut,
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center"
+        }}>
+          
+          <div style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(15px)",
+            padding: "30px",
+            borderRadius: "20px",
+            boxShadow: "0 0 60px rgba(255,106,0,0.4)"
+          }}>
+            <img src="/logo.png" style={{ width: "150px" }} />
+          </div>
 
-<div style={{
-  position: "absolute",
-  inset: 0,
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center"
-}}>
-  
-  <img 
-    src="/logo.png" 
-    style={{ width: "120px", marginBottom: "20px" }} 
-  />
+          <motion.h1 style={{
+            fontSize: "4rem",
+            marginTop: "20px",
+            letterSpacing: "3px",
+            textAlign: "center",
+            y: textMove
+          }}>
+            Kirkkonummen Liikuntakeskus
+          </motion.h1>
 
-  <h1 style={{ 
-    fontSize: "3rem", 
-    textAlign: "center",
-    letterSpacing: "2px"
-  }}>
-    Kirkkonummen Liikuntakeskus
-  </h1>
+          <p style={{ color: "#aaa" }}>
+            24/7 Kuntosali • 37+ vuotta
+          </p>
 
-  <p style={{ color: "#aaa", marginTop: "10px" }}>
-    24/7 Kuntosali • 37+ vuotta
-  </p>
-
-  <button style={{
-    marginTop: "20px",
-    padding: "12px 24px",
-    background: "#ff6a00",
-    border: "none"
-  }}>
-    LIITY NYT
-  </button>
-
-</div>
-      </section>
-
-      {/* VOIMA */}
-      <section style={{ height: "100vh" }}>
-        <motion.div style={{ y: y1, textAlign: "center", marginTop: "40vh" }}>
-          <h2 style={{ fontSize: "3rem", color: "#ff6a00" }}>VOIMA</h2>
-        </motion.div>
-      </section>
-
-      {/* ENERGIA */}
-      <section style={{ height: "100vh" }}>
-        <motion.div style={{ y: y2, textAlign: "center", marginTop: "40vh" }}>
-          <h2 style={{ fontSize: "3rem" }}>ENERGIA</h2>
-        </motion.div>
-      </section>
-
-      {/* PALAUTUMINEN */}
-      <section style={{ height: "100vh" }}>
-        <motion.div style={{ y: y3, textAlign: "center", marginTop: "40vh" }}>
-          <h2 style={{ fontSize: "3rem" }}>PALAUTUMINEN</h2>
+          <button style={{
+            marginTop: "30px",
+            padding: "15px 40px",
+            background: "linear-gradient(135deg,#ff6a00,#ff8c00)",
+            border: "none",
+            borderRadius: "12px",
+            color: "#fff",
+            fontWeight: "600",
+            cursor: "pointer",
+            boxShadow: "0 10px 40px rgba(255,106,0,0.5)"
+          }}>
+            LIITY NYT
+          </button>
         </motion.div>
       </section>
 
       {/* IMAGE SECTION */}
-      <section style={{ padding: "80px", textAlign: "center" }}>
-        <h2 style={{ fontSize: "2rem", marginBottom: "20px" }}>KUNTOSALI</h2>
-        <img 
-          src="/gym.jpg" 
-          style={{ width: "80%", borderRadius: "20px" }} 
+      <section style={{
+        height: "140vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <motion.img
+          src="/gym.jpg"
+          style={{
+            width: "65%",
+            borderRadius: "20px",
+            scale: imageZoom,
+            boxShadow: "0 40px 120px rgba(0,0,0,0.8)"
+          }}
         />
       </section>
 
       {/* PRICING */}
-      <section style={{ padding: "80px", background: "#111" }}>
-        <h2 style={{ textAlign: "center", marginBottom: "40px" }}>HINNASTO</h2>
+      <section style={{
+        height: "120vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <h2 style={{ fontSize: "3rem", marginBottom: "20px" }}>
+          Hinnasto
+        </h2>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px,1fr))",
-          gap: "20px"
-        }}>
-          {plans.map((p, i) => (
-            <div key={i} style={{
-              padding: "20px",
-              background: "#1c1c1c",
-              borderRadius: "15px"
-            }}>
-              <h3>{p.name}</h3>
-              <p style={{ color: "#ff6a00", fontSize: "20px" }}>{p.price}</p>
-              <p style={{ color: "#aaa" }}>{p.desc}</p>
-            </div>
+        <div style={{ display: "flex", gap: "40px" }}>
+          {[
+            { name: "12 kk jäsenyys", price: "51€/kk" },
+            { name: "VIP jäsenyys", price: "58€/kk" }
+          ].map((plan, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.1 }}
+              style={{
+                padding: "40px",
+                background: "rgba(255,255,255,0.05)",
+                borderRadius: "20px",
+                backdropFilter: "blur(10px)",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.6)"
+              }}
+            >
+              <h3>{plan.name}</h3>
+              <p>{plan.price}</p>
+            </motion.div>
           ))}
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section style={{ padding: "80px", textAlign: "center" }}>
-        <h2>YHTEYSTIEDOT</h2>
-        <p>Munkinmäentie 19, Kirkkonummi</p>
-        <p>asiakaspalvelu@kirkkonummen-liikuntakeskus.net</p>
-        <p>Ma & Ke 17–19</p>
+      {/* CTA */}
+      <section style={{
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <button style={{
+          padding: "20px 60px",
+          fontSize: "1.2rem",
+          background: "#ff6a00",
+          border: "none",
+          borderRadius: "12px",
+          color: "#fff",
+          cursor: "pointer"
+        }}>
+          OSTA JÄSENYYS
+        </button>
       </section>
 
     </div>
-  );
+  )
 }
-
-const plans = [
-  { name: "Kertamaksu", price: "14€", desc: "17–20" },
-  { name: "VIP", price: "18€" },
-  { name: "Jäsenyys", price: "58€/kk" },
-  { name: "12kk", price: "51€/kk" },
-  { name: "VIP 12kk", price: "58€/kk" },
-  { name: "Nuoriso", price: "34€" },
-  { name: "1kk", price: "79€" },
-  { name: "Aloitus", price: "60€" },
-  { name: "PT", price: "70€" }
-];
