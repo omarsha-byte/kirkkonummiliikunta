@@ -1,41 +1,68 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+function Scene() {
+  const ref = useRef();
+
+  useFrame(() => {
+    ref.current.rotation.y += 0.01;
+    ref.current.rotation.x += 0.005;
+  });
+
+  return (
+    <mesh ref={ref}>
+      <icosahedronGeometry args={[1.5, 1]} />
+      <meshStandardMaterial color="#ff6a00" wireframe />
+    </mesh>
+  );
+}
 
 export default function App() {
+  const { scrollYProgress } = useScroll();
+  const y = useTransform(scrollYProgress, [0, 1], [0, -300]);
+
   return (
-    <div style={{ background: "#000", color: "#fff", fontFamily: "sans-serif" }}>
+    <div style={{ background: "#000", color: "#fff" }}>
       
+      {/* HERO */}
       <section style={{ height: "100vh", position: "relative" }}>
         <Canvas>
           <ambientLight />
-          <mesh>
-            <boxGeometry />
-            <meshStandardMaterial color="orange" />
-          </mesh>
+          <directionalLight position={[2, 2, 2]} />
+          <Scene />
         </Canvas>
 
         <div style={{
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
+          inset: 0,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center"
         }}>
-          <h1>Kirkkonummen Liikuntakeskus</h1>
+          <h1 style={{ fontSize: "3rem", textAlign: "center" }}>
+            Kirkkonummen Liikuntakeskus
+          </h1>
+
           <button style={{
             marginTop: "20px",
-            padding: "10px 20px",
-            background: "orange",
+            padding: "12px 24px",
+            background: "#ff6a00",
             border: "none"
           }}>
             LIITY NYT
           </button>
         </div>
+      </section>
+
+      {/* SCROLL SECTION */}
+      <section style={{ height: "150vh" }}>
+        <motion.div style={{ y, textAlign: "center", marginTop: "40vh" }}>
+          <h2 style={{ fontSize: "3rem", color: "#ff6a00" }}>
+            VOIMA
+          </h2>
+        </motion.div>
       </section>
 
     </div>
