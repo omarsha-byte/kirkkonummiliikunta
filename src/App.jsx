@@ -1,6 +1,5 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { useRef, useEffect } from "react"
-import * as THREE from "three"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 
@@ -13,12 +12,10 @@ function Scene({ scroll }) {
   useFrame(() => {
     const t = scroll.current
 
-    // CAMERA MOVEMENT (cinematic)
     camera.position.z = 8 - t * 5
     camera.position.y = t * 3
     camera.rotation.x = -t * 0.4
 
-    // OBJECT MOTION
     mesh.current.rotation.y += 0.01
     mesh.current.rotation.x += 0.005
   })
@@ -51,16 +48,13 @@ export default function App() {
       }
     })
 
-    // TEXT FADE
     tl.to("#hero", { opacity: 0, duration: 1 })
 
-    // IMAGE REVEAL
     tl.fromTo("#gymImg",
       { scale: 0.8, opacity: 0 },
       { scale: 1.2, opacity: 1, duration: 2 }
     )
 
-    // PRICING APPEAR
     tl.fromTo("#pricing",
       { y: 100, opacity: 0 },
       { y: 0, opacity: 1, duration: 2 }
@@ -81,12 +75,10 @@ export default function App() {
   return (
     <div ref={container} style={{ background: "#000", color: "#fff" }}>
 
-      {/* 3D BACKGROUND */}
       <Canvas style={{ position: "fixed", top: 0, left: 0 }}>
         <Scene scroll={scrollRef} />
       </Canvas>
 
-      {/* HERO */}
       <section style={{ height: "100vh", position: "relative" }}>
         <div id="hero" style={{
           position: "absolute",
@@ -97,21 +89,9 @@ export default function App() {
           justifyContent: "center"
         }}>
 
-          <div style={{
-            background: "rgba(255,255,255,0.05)",
-            backdropFilter: "blur(15px)",
-            padding: "30px",
-            borderRadius: "20px",
-            boxShadow: "0 0 60px rgba(255,106,0,0.4)"
-          }}>
-            <img src="/logo.png" style={{ width: "150px" }} />
-          </div>
+          <img src="/logo.png" style={{ width: "140px" }} />
 
-          <h1 style={{
-            fontSize: "4rem",
-            marginTop: "20px",
-            letterSpacing: "3px"
-          }}>
+          <h1 style={{ fontSize: "4rem" }}>
             Kirkkonummen Liikuntakeskus
           </h1>
 
@@ -128,7 +108,6 @@ export default function App() {
         </div>
       </section>
 
-      {/* IMAGE SECTION */}
       <section style={{
         height: "150vh",
         display: "flex",
@@ -146,7 +125,6 @@ export default function App() {
         />
       </section>
 
-      {/* PRICING */}
       <section style={{
         height: "120vh",
         display: "flex",
