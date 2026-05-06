@@ -36,27 +36,42 @@ export default function App() {
           <Scene />
         </Canvas>
 
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center"
-        }}>
-          <h1 style={{ fontSize: "3rem", textAlign: "center" }}>
-            Kirkkonummen Liikuntakeskus
-          </h1>
+<div style={{
+  position: "absolute",
+  inset: 0,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center"
+}}>
+  
+  <img 
+    src="/logo.png" 
+    style={{ width: "120px", marginBottom: "20px" }} 
+  />
 
-          <button style={{
-            marginTop: "20px",
-            padding: "12px 24px",
-            background: "#ff6a00",
-            border: "none"
-          }}>
-            LIITY NYT
-          </button>
-        </div>
+  <h1 style={{ 
+    fontSize: "3rem", 
+    textAlign: "center",
+    letterSpacing: "2px"
+  }}>
+    Kirkkonummen Liikuntakeskus
+  </h1>
+
+  <p style={{ color: "#aaa", marginTop: "10px" }}>
+    24/7 Kuntosali • 37+ vuotta
+  </p>
+
+  <button style={{
+    marginTop: "20px",
+    padding: "12px 24px",
+    background: "#ff6a00",
+    border: "none"
+  }}>
+    LIITY NYT
+  </button>
+
+</div>
       </section>
 
       {/* VOIMA */}
