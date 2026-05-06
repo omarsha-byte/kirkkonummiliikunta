@@ -1,220 +1,150 @@
-import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { useRef, useEffect } from "react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-
-gsap.registerPlugin(ScrollTrigger)
-
-function Scene({ scroll }) {
-  const mesh = useRef()
-  const { camera } = useThree()
-
-  useFrame(() => {
-    const t = scroll.current
-
-    camera.position.z = 8 - t * 5
-    camera.position.y = t * 3
-    camera.rotation.x = -t * 0.4
-
-    mesh.current.rotation.y += 0.01
-    mesh.current.rotation.x += 0.005
-  })
-
-  return (
-    <>
-      <fog attach="fog" args={["#000", 5, 20]} />
-      <ambientLight intensity={0.3} />
-      <pointLight position={[5, 5, 5]} intensity={2} color="#ff6a00" />
-
-      <mesh ref={mesh}>
-        <icosahedronGeometry args={[2, 1]} />
-        <meshStandardMaterial wireframe color="#ff6a00" />
-      </mesh>
-    </>
-  )
-}
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 
 export default function App() {
-  const container = useRef()
-  const scrollRef = useRef(0)
-
-  useEffect(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: true
-      }
-    })
-
-    tl.to("#hero", { opacity: 0, duration: 1 })
-
-    tl.fromTo("#gymImg",
-      { scale: 0.8, opacity: 0 },
-      { scale: 1.2, opacity: 1, duration: 2 }
-    )
-
-    tl.fromTo("#pricing",
-      { y: 100, opacity: 0 },
-      { y: 0, opacity: 1, duration: 2 }
-    )
-
-    ScrollTrigger.create({
-      trigger: container.current,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: true,
-      onUpdate: (self) => {
-        scrollRef.current = self.progress
-      }
-    })
-  }, [])
-
   return (
-    <div ref={container} style={{ background: "#000", color: "#fff" }}>
+    <div style={{ fontFamily: "Arial, sans-serif", background: "#000", color: "#fff" }}>
 
-      {/* 3D BACKGROUND */}
-      <Canvas style={{ position: "fixed", top: 0, left: 0 }}>
-        <Scene scroll={scrollRef} />
-      </Canvas>
-
-      {/* HERO */}
-      <section style={{ height: "100vh", position: "relative" }}>
-        
-        {/* Background Image */}
-        <img 
-          src="/bg.jpg"
+      {/* HERO SECTION */}
+      <section
+        style={{
+          height: "100vh",
+          position: "relative",
+          backgroundImage: "url('/bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Dark overlay */}
+        <div
           style={{
             position: "absolute",
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.25,
-            filter: "brightness(0.6)"
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
           }}
         />
 
-        {/* Gradient Overlay */}
-        <div style={{
-          position: "absolute",
-          inset: 0,
-          background: "linear-gradient(to bottom, rgba(0,0,0,0.6), #000)"
-        }} />
-
         {/* Content */}
-        <div id="hero" style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center"
-        }}>
+        <div
+          style={{
+            position: "relative",
+            zIndex: 2,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            padding: "20px",
+          }}
+        >
+          <img
+            src="/logo.png"
+            alt="logo"
+            style={{
+              width: "120px",
+              marginBottom: "20px",
+              filter: "invert(1)",
+            }}
+          />
 
-          {/* LOGO BADGE */}
-          <div style={{
-            background: "rgba(255,255,255,0.05)",
-            backdropFilter: "blur(20px)",
-            padding: "25px 40px",
-            borderRadius: "20px",
-            boxShadow: "0 0 80px rgba(255,106,0,0.35)",
-            marginBottom: "20px"
-          }}>
-            <img src="/logo.png" style={{ width: "140px" }} />
-          </div>
-
-          <h1 style={{
-            fontSize: "4rem",
-            letterSpacing: "3px",
-            textAlign: "center"
-          }}>
+          <h1 style={{ fontSize: "3rem", marginBottom: "10px" }}>
             Kirkkonummen Liikuntakeskus
           </h1>
 
-          <button style={{
-            marginTop: "30px",
-            padding: "15px 40px",
-            background: "#ff6a00",
-            border: "none",
-            borderRadius: "10px",
-            color: "#fff",
-            cursor: "pointer"
-          }}>
+          <p style={{ opacity: 0.8, marginBottom: "20px" }}>
+            24/7 Kuntosali • 37+ vuotta
+          </p>
+
+          <button
+            style={{
+              padding: "14px 28px",
+              background: "#ff6a00",
+              border: "none",
+              color: "#fff",
+              fontWeight: "bold",
+              cursor: "pointer",
+              borderRadius: "4px",
+            }}
+          >
             LIITY NYT
           </button>
         </div>
       </section>
 
-      {/* MAIN IMAGE */}
-      <section style={{
-        height: "150vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
+      {/* SECTION 1 */}
+      <section
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "40px",
+          padding: "60px 20px",
+          flexWrap: "wrap",
+        }}
+      >
         <img
-          id="gymImg"
           src="/gym.jpg"
           style={{
-            width: "65%",
-            borderRadius: "20px",
-            opacity: 0,
-            boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
-            border: "1px solid rgba(255,255,255,0.1)"
+            width: "400px",
+            borderRadius: "10px",
           }}
         />
-      </section>
 
-      {/* PRICING */}
-      <section style={{
-        height: "120vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
-        <div id="pricing" style={{
-          display: "flex",
-          gap: "40px",
-          opacity: 0
-        }}>
-          <div style={{
-            padding: "40px",
-            background: "rgba(255,255,255,0.05)",
-            borderRadius: "20px"
-          }}>
-            <h3>12 kk</h3>
-            <p>51€/kk</p>
-          </div>
-
-          <div style={{
-            padding: "40px",
-            background: "rgba(255,255,255,0.05)",
-            borderRadius: "20px"
-          }}>
-            <h3>VIP</h3>
-            <p>58€/kk</p>
-          </div>
+        <div style={{ maxWidth: "400px" }}>
+          <h2 style={{ fontSize: "2rem", marginBottom: "10px", color: "#ff6a00" }}>
+            VOIMA
+          </h2>
+          <p style={{ opacity: 0.8 }}>
+            Modernit laitteet ja vapaat painot. Kaikki mitä tarvitset kehittääksesi voimaa ja lihasmassaa.
+          </p>
         </div>
       </section>
 
-      {/* EXTRA IMAGE SECTION */}
-      <section style={{
-        height: "120vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-      }}>
-        <img 
+      {/* SECTION 2 */}
+      <section
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "40px",
+          padding: "60px 20px",
+          flexWrap: "wrap",
+          flexDirection: "row-reverse",
+        }}
+      >
+        <img
           src="/gym2.jpg"
           style={{
-            width: "50%",
-            borderRadius: "20px",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.8)"
+            width: "400px",
+            borderRadius: "10px",
           }}
         />
+
+        <div style={{ maxWidth: "400px" }}>
+          <h2 style={{ fontSize: "2rem", marginBottom: "10px", color: "#ff6a00" }}>
+            KUNTO
+          </h2>
+          <p style={{ opacity: 0.8 }}>
+            Cardio-alue ja monipuoliset harjoittelumahdollisuudet kaikentasoisille treenaajille.
+          </p>
+        </div>
       </section>
 
+      {/* FOOTER */}
+      <footer
+        style={{
+          textAlign: "center",
+          padding: "40px",
+          borderTop: "1px solid #222",
+        }}
+      >
+        <p style={{ opacity: 0.6 }}>
+          © Kirkkonummen Liikuntakeskus
+        </p>
+      </footer>
     </div>
-  )
+  );
 }
