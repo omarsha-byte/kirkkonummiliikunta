@@ -20,7 +20,10 @@ function Scene() {
 
 export default function App() {
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -300]);
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -400]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -600]);
 
   return (
     <div style={{ background: "#000", color: "#fff" }}>
@@ -56,12 +59,24 @@ export default function App() {
         </div>
       </section>
 
-      {/* SCROLL SECTION */}
-      <section style={{ height: "150vh" }}>
-        <motion.div style={{ y, textAlign: "center", marginTop: "40vh" }}>
-          <h2 style={{ fontSize: "3rem", color: "#ff6a00" }}>
-            VOIMA
-          </h2>
+      {/* VOIMA */}
+      <section style={{ height: "100vh" }}>
+        <motion.div style={{ y: y1, textAlign: "center", marginTop: "40vh" }}>
+          <h2 style={{ fontSize: "3rem", color: "#ff6a00" }}>VOIMA</h2>
+        </motion.div>
+      </section>
+
+      {/* ENERGIA */}
+      <section style={{ height: "100vh" }}>
+        <motion.div style={{ y: y2, textAlign: "center", marginTop: "40vh" }}>
+          <h2 style={{ fontSize: "3rem" }}>ENERGIA</h2>
+        </motion.div>
+      </section>
+
+      {/* PALAUTUMINEN */}
+      <section style={{ height: "100vh" }}>
+        <motion.div style={{ y: y3, textAlign: "center", marginTop: "40vh" }}>
+          <h2 style={{ fontSize: "3rem" }}>PALAUTUMINEN</h2>
         </motion.div>
       </section>
 
