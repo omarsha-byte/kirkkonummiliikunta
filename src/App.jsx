@@ -69,17 +69,40 @@ export default function App() {
         scrollRef.current = self.progress
       }
     })
-
   }, [])
 
   return (
     <div ref={container} style={{ background: "#000", color: "#fff" }}>
 
+      {/* 3D BACKGROUND */}
       <Canvas style={{ position: "fixed", top: 0, left: 0 }}>
         <Scene scroll={scrollRef} />
       </Canvas>
 
+      {/* HERO */}
       <section style={{ height: "100vh", position: "relative" }}>
+        
+        {/* Background Image */}
+        <img 
+          src="/bg.jpg"
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.25,
+            filter: "brightness(0.6)"
+          }}
+        />
+
+        {/* Gradient Overlay */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(to bottom, rgba(0,0,0,0.6), #000)"
+        }} />
+
+        {/* Content */}
         <div id="hero" style={{
           position: "absolute",
           inset: 0,
@@ -89,9 +112,23 @@ export default function App() {
           justifyContent: "center"
         }}>
 
-          <img src="/logo.png" style={{ width: "140px" }} />
+          {/* LOGO BADGE */}
+          <div style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(20px)",
+            padding: "25px 40px",
+            borderRadius: "20px",
+            boxShadow: "0 0 80px rgba(255,106,0,0.35)",
+            marginBottom: "20px"
+          }}>
+            <img src="/logo.png" style={{ width: "140px" }} />
+          </div>
 
-          <h1 style={{ fontSize: "4rem" }}>
+          <h1 style={{
+            fontSize: "4rem",
+            letterSpacing: "3px",
+            textAlign: "center"
+          }}>
             Kirkkonummen Liikuntakeskus
           </h1>
 
@@ -101,13 +138,15 @@ export default function App() {
             background: "#ff6a00",
             border: "none",
             borderRadius: "10px",
-            color: "#fff"
+            color: "#fff",
+            cursor: "pointer"
           }}>
             LIITY NYT
           </button>
         </div>
       </section>
 
+      {/* MAIN IMAGE */}
       <section style={{
         height: "150vh",
         display: "flex",
@@ -118,13 +157,16 @@ export default function App() {
           id="gymImg"
           src="/gym.jpg"
           style={{
-            width: "60%",
+            width: "65%",
             borderRadius: "20px",
-            opacity: 0
+            opacity: 0,
+            boxShadow: "0 40px 120px rgba(0,0,0,0.9)",
+            border: "1px solid rgba(255,255,255,0.1)"
           }}
         />
       </section>
 
+      {/* PRICING */}
       <section style={{
         height: "120vh",
         display: "flex",
@@ -154,6 +196,23 @@ export default function App() {
             <p>58€/kk</p>
           </div>
         </div>
+      </section>
+
+      {/* EXTRA IMAGE SECTION */}
+      <section style={{
+        height: "120vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }}>
+        <img 
+          src="/gym2.jpg"
+          style={{
+            width: "50%",
+            borderRadius: "20px",
+            boxShadow: "0 30px 80px rgba(0,0,0,0.8)"
+          }}
+        />
       </section>
 
     </div>
